@@ -68,7 +68,7 @@
       .pdf-page {
         width: 210mm;
         min-height: 297mm; /* A4 height */
-        padding: 20mm;
+        padding: 25mm 20mm;
         background: white;
         page-break-after: always;
         position: relative;
@@ -83,11 +83,12 @@
         font-size: 14pt;
         line-height: 1.8;
         text-align: justify;
+        flex-grow: 1;
       }
       .pdf-header {
         border-bottom: 2px solid #8fae28;
         padding-bottom: 10px;
-        margin-bottom: 20px;
+        margin-bottom: 30px;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -95,13 +96,15 @@
         color: #666;
       }
       .pdf-footer {
-        position: absolute;
-        bottom: 10mm;
-        left: 0;
-        right: 0;
+        border-top: 1px solid #eee;
+        padding-top: 10px;
+        margin-top: auto;
         text-align: center;
         font-size: 10pt;
         color: #999;
+      }
+      .pdf-page-number {
+        font-weight: bold;
       }
     </style>
 <script type="importmap">
@@ -137,8 +140,8 @@
             description: 'ملخص شامل لكتاب مقدمة في الإدارة العامة. يغطي المفاهيم الأساسية، الهيكل التنظيمي، والوظائف الإدارية الحديثة.',
             fullDescription: 'ملخص وافي ومبسط لمقرر الإدارة العامة (الطبعة الرابعة 2024-2025). يشرح الفرق بين الإدارة العامة وإدارة الأعمال، ويتناول بالتفصيل وظائف التخطيط، التنظيم، القيادة، والرقابة بأسلوب مبسط للطلاب.',
             imageAlt: 'غلاف كتاب مقدمة في الإدارة العامة',
-            fileSize: '450 KB',
-            pageCount: 8,
+            fileSize: '650 KB',
+            pageCount: 9,
             fileName: 'PublicAdmin_Summary.pdf',
             topics: [
                 'ماهية الإدارة العامة وتطورها',
@@ -150,34 +153,40 @@
                 'العمليات والوظائف الإدارية',
                 'المفاهيم والاتجاهات الجديدة'
             ],
-            // Content for the 8 PDF Pages
+            // Content for PDF Pages (Extracted from images)
             pdfContent: [
                 {
                     type: 'cover',
                 },
                 {
                     type: 'text',
-                    title: 'المقدمة',
-                    content: `هذه الطبعة الثالثة من كتاب مقدمة في الإدارة العامة، وهي طبعة جديدة ومنقحة نقدمها للمكتبة الإدارية العربية والليبية بخاصة؛ وإلى الباحثين والمهتمين بهذا الحقل العلمي المتجدد. وهو جهد علمي متواضع قابل للتطوير والإضافة والإثراء. يتوزع الكتاب على سبعة فصول رئيسة هي كالتالي:
+                    title: 'مقدمة الكتاب',
+                    content: `هذه الطبعة الثالثة من كتاب مقدمة في الإدارة العامة، وهي طبعة جديدة ومنقحة نقدمها للمكتبة الإدارية العربية والليبية بخاصة؛ وإلى الباحثين والمهتمين بهذا الحقل العلمي المتجدد. وهو جهد علمي متواضع قابل للتطوير والإضافة والإثراء. يتوزع الكتاب على ثمانية فصول رئيسة هي كالتالي:
 
 1. الفصل الأول: استعرض هوية وماهية الإدارة العامة من حيث نشأتها وتطورها وخصائصها وأهميتها والمبادئ التي تتأسس عليها.
-2. الفصل الثاني: تناول تطور الفكر الإداري الكلاسيكي والحديث والمعاصر مستعرضا أهم النظريات التي ساهمت في التأسيس لحقل الإدارة العامة وفي إثراءه.
-3. الفصل الثالث: خصص لدراسة موضوع الإدارة العامة كحقل علمي مستقل مستعرضا طبيعة هذا الحقل وتعيين حدوده واستقلاليته وعلاقته بحقول العلوم الاجتماعية الأخرى.
-4. الفصل الرابع: تناول منهجية دراسة الإدارة العامة والمداخل التقليدية والسلوكية والأساليب البحثية التي تساعد الباحث في وصف وتحليل الظاهرة الإدارية.`,
+2. الفصل الثاني: تناول تطور الفكر الإداري الكلاسيكي والحديث والمعاصر مستعرضا أهم النظريات التي اسهمت في التأسيس لحقل الإدارة العامة وفي إثراءه.
+3. الفصل الثالث: خصص لدراسة موضوع الإدارة العامة كحقل علمي مستقل مستعرضا طبيعة هذا الحقل وتعيين حدوده واستقلاليته وعلاقته بحقول العلوم الاجتماعية الأخرى. وكذا أهم المدارس الفكرية التي سادت هذا الحقل واسهمت في تطوره.
+4. الفصل الرابع: تناول منهجية دراسة الإدارة العامة والمداخل التقليدية والسلوكية والأساليب البحثية التي تساعد الباحث في وصف وتحليل الظاهرة الإدارية وإمكانية التنبؤ بمساراتها وتحولاتها.
+5. الفصل الخامس: تناول الإدارة العامة من منظور مقارن كفرع جديد ومتجدد في الدراسات المقارنة وأهميتها وأهدافها والمنظورات المقارنة في هذا الحقل الدراسي.
+6. الفصل السادس: تناول مضمون وأخلاقيات وقيم الإدارة العامة.
+7. الفصل السابع: استعرض عملية الإدارة العامة كمجموعة من الأنشطة والوظائف الإدارية بدءا من عملية التخطيط؛ والتنظيم؛ التوجيه؛ والرقابة والتقويم والمبادئ والأسس التي تتعلق بها وصور التنظيم الإداري المختلفة.
+8. الفصل الثامن: استعرض المفاهيم والاتجاهات الجديدة في حقل الإدارة العامة والتي أدت إلى تحولات مهمة نظرية وتطبيقية في هذا الحقل وأسست لما يمكن أن نطلق عليه "علم الإدارة العامة الجديدة".
+
+كل التمنيات للجميع بالتوفيق والنجاح.. المؤلفان`,
                     footer: 'صفحة 1'
                 },
                 {
                     type: 'list',
                     title: 'فهرس المحتويات',
                     items: [
-                        'الفصل الأول: ماهية الإدارة العامة وتطورها',
+                        'الفصل الأول: الإدارة العامة: الهوية والماهية',
                         'الفصل الثاني: تطور الفكر الإداري',
-                        'الفصل الثالث: خصائص موضوع الإدارة العامة',
+                        'الفصل الثالث: الإدارة العامة كحقل علمي مستقل',
                         'الفصل الرابع: منهجية دراسة الإدارة العامة',
                         'الفصل الخامس: الإدارة العامة من منظور مقارن',
-                        'الفصل السادس: مضمون وأخلاقيات وقيم الإدارة العامة',
-                        'الفصل السابع: عملية الإدارة العامة (التخطيط، التنظيم، التوجيه، الرقابة)',
-                        'الفصل الثامن: المفاهيم والاتجاهات الجديدة (إدارة الجودة الشاملة، الإدارة الإلكترونية)'
+                        'الفصل السادس: مضمون وأخلاقيات الإدارة العامة',
+                        'الفصل السابع: العمليات والوظائف الإدارية',
+                        'الفصل الثامن: المفاهيم والاتجاهات الجديدة'
                     ],
                     footer: 'صفحة 2'
                 },
@@ -188,54 +197,62 @@
 
 بغية إرساء مبادئ لتنظيم وتقسيم وتقنين العمل ولتلقين المبادئ الإدارية الصحيحة ولكن بدايات الدراسة العلمية للإدارة العامة نشأت خلال قرون لاحقة ويحددها البعض بأواخر القرن التاسع عشر وبدايات القرن العشرين.
 
-كلمة الإدارة بصفة عامة يقصد بها "الخدمة"، حيث تستخدم كلمة إدارة كترجمة لكلمة management والأصل اللاتيني لهذه الكلمة يعني "serve"، أي الخدمة أو من يقومون بالخدمة.`,
+كلمة الإدارة بصفة عامة يقصد بها "الخدمة"، حيث تستخدم كلمة إدارة كترجمة لكلمة management والأصل اللاتيني لهذه الكلمة يعني "serve"، أي الخدمة أو من يقومون بالخدمة.
+
+والإدارة من حيث التعريف البسيط لها هي "تنفيذ الأعمال بواسطة آخرين عن طريق تخطيط وتنظيم وتوجيه ورقابة مجهوداتهم". بينما يعرفها البعض بأنها "النشاط الإنساني الذي يستهدف تحقيق التعاون الفعال المثمر بين الجهود البشرية المختلفة من اجل تحقيق هدف معين بدرجة عالية من الكفاءة والفعالية".`,
                     footer: 'صفحة 3'
                 },
                 {
                     type: 'text',
-                    title: 'تعريف الإدارة العامة',
-                    content: `والإدارة من حيث التعريف البسيط لها هي "تنفيذ الأعمال بواسطة آخرين عن طريق تخطيط وتنظيم وتوجيه ورقابة مجهوداتهم". بينما يعرفها البعض بأنها "النشاط الإنساني الذي يستهدف تحقيق التعاون الفعال المثمر بين الجهود البشرية المختلفة من اجل تحقيق هدف معين بدرجة عالية من الكفاءة والفعالية".
+                    title: 'تعريف الإدارة العامة (1)',
+                    content: `تذهب بعض الأدبيات إلى أنه من الصعب الاتفاق على تعريف دقيق محدد جامع مانع ومتفق عليه للإدارة العامة، وذلك للأسباب التالية:
+1. إن الإدارة العامة تعتبر من العلوم الاجتماعية التي ترتبط بالعنصر البشري ومن ثم يصعب التعميم وتتعدد وجهات النظر لأي مفهوم أو مصطلح. وهذا عكس الحال بالنسبة للمفاهيم المرتبطة بالعلوم الطبيعية.
+2. تعدد مدارس الإدارة العامة ومناهجها ومن ثم اختلاف التعريفات حسب المدارس الإدارية المتعددة.
+3. تعدد مداخل دراسة الإدارة العامة حسب مجال المعرفة التي يشتق منها التعريف. هل هي مدرسة إدارية أم قانونية أم سياسية أو غيرها؟.
 
-يذهب بعض الأدبيات إلى أنه من الصعب الاتفاق على تعريف دقيق محدد جامع مانع ومتفق عليه للإدارة العامة، وذلك للأسباب التالية:
-1. إن الإدارة العامة تعتبر من العلوم الاجتماعية التي ترتبط بالعنصر البشري ومن ثم يصعب التعميم وتتعدد وجهات النظر لأي مفهوم أو مصطلح.
-2. تعدد مدارس الإدارة العامة ومناهجها ومن ثم اختلاف التعريفات حسب المدارس الإدارية المتعددة.`,
+وبصفة عامة يقصد بالإدارة العامة Public administration جميع العمليات أو النشاطات الحكومية التي تهدف إلى تنفيذ السياسة العامة للدولة. بمعنى آخر الإدارة العامة "تتمثل في وجود توجيه وتنسيق جهد بشري مشترك ورقابته داخل منظمة لتحقيق هدف معين. إلا أن الذي يطبع الإدارة العامة بطابعها المميز، هو أنها تمثل منظمة أو مجموعة منظمات عامة تابعة للدولة وأن موضوع نشاطها يكمن في تحقيق سياسة المجتمع، وإشباع الحاجة المتعلقة بالمصلحة العامة".`,
                     footer: 'صفحة 4'
                 },
-                {
+                 {
                     type: 'text',
-                    title: 'خصائص الإدارة العامة',
-                    content: `تعددت التعريفات الخاصة بالإدارة العامة، ويمكن استخلاص مجموعة من الخصائص التي تميز هذا الحقل:
+                    title: 'تعريف الإدارة العامة (2)',
+                    content: `الإدارة العامة - بهذا المعنى - تشمل كل هيئة عامة أو جهاز عام أو مرفق عام، مركزيا كان أو محلياً أوكلت إليه مهمة تقديم الخدمات العامة ومنحت له الدولة وسلطاتها السياسية صلاحيات وسلطات ومسؤوليات و موارد تساعده على تحقيق أهدافه وتقديم خدمات عامة وبشكل أفضل.
 
-أولاً: الإدارة العامة نشاط هادف. فهي ليست عشوائية، بل تسعى لتحقيق أهداف مجتمعية محددة رسمتها السلطة السياسية في الدولة.
-
-ثانياً: الإدارة العامة نشاط رسمي. تستمد سلطتها من القوانين والأنظمة المعمول بها في الدولة، وتعمل في إطار تنظيمي محدد.
-
-ثالثاً: الإدارة العامة نشاط إنساني. تعتمد بشكل أساسي على العنصر البشري في تنفيذ مهامها، وتتأثر بالسلوك الإنساني والعلاقات الاجتماعية.`,
+وقد تبنى برنامج الأمم المتحدة الإنمائي معنيان للإدارة العامة وثيقا الصلة ببعضهما بعضا، هما:
+1. مجموعة الآليات (السياسات والقواعد والإجراءات والأنظمة والهياكل والأفراد إلخ) التي تمولها ميزانية الدولة (أو الحكومة المحلية) والتي تتولى تنظيم شؤون الحكومة (الحكومات) التنفيذية (والمحلية) وإدارتها، وعلاقاتها مع أصحاب المصلحة الآخرين في الدولة والمجتمع والبيئة الخارجية على المستوى الوطني ودون الوطني.
+2. الإدارة وتنفيد مجمل مجموعة الأنشطة الحكومية التي تتعلق بتطبيق ما تعتمده الحكومة والإدارة من قوانين ونظم قانونية وقرارات ذات صلة بتقديم الخدمة العامة.`,
                     footer: 'صفحة 5'
                 },
                 {
                     type: 'text',
-                    title: 'العمليات والوظائف الإدارية',
-                    content: `تتكون العملية الإدارية من مجموعة من الوظائف المترابطة التي يمارسها المديرون في مختلف المستويات:
+                    title: 'التمييز بين معنيين للإدارة العامة',
+                    content: `يمكن التمييز بين معنيين للإدارة العامة:
 
-1. التخطيط (Planning): هو الوظيفة الإدارية الأولى، ويعني تحديد الأهداف ووضع السياسات والخطط الكفيلة بتحقيقها.
-2. التنظيم (Organizing): يعني تحديد الهيكل التنظيمي، وتوزيع المهام والمسؤوليات، وتحديد العلاقات بين الأفراد والإدارات.
-3. القيادة والتوجيه (Leading & Directing): تحفيز الموظفين وتوجيه سلوكهم نحو تحقيق الأهداف.
-4. الرقابة (Controlling): قياس الأداء الفعلي ومقارنته بالأهداف المخططة، واتخاذ الإجراءات التصحيحية عند وجود انحرافات.`,
+1 - المعنى الضيق للإدارة العامة، الذي يقتصر على الأجهزة التنفيذية للدولة وبنائها البيروقراطي الذي يتولى مجموعة من الوظائف التي تساعد في ترجمة السياسة العامة إلى واقع عملي مناسب. وتتضمن هذه الوظائف خدمات الأمن العام والدفاع والصحة والتعليم والمالية والزراعة والمياه والقضاء والمواصلات والعلاقات الخارجية وغيرها من الخدمات.
+
+2 - المعنى الواسع للإدارة العامة، الذي يتضمن البناء الكلي للسلطات العامة في الدولة، وهي التشريع والتنفيذ والقضاء وما ينبثق عنها من مؤسسات وأجهزة ووظائف متكاملة ومترابطة ومتميزة وظيفيا. وبهذا المعنى: الإدارة العامة يطلق عليها أحيانا الإدارة التنفيذية التي يناط بها تنفيذ السياسات العامة.`,
                     footer: 'صفحة 6'
                 },
                 {
                     type: 'text',
-                    title: 'المفاهيم والاتجاهات الجديدة',
-                    content: `شهد حقل الإدارة العامة تطورات كبيرة في العقود الأخيرة، ظهرت معها مفاهيم جديدة تهدف لتحسين الأداء الحكومي:
+                    title: 'خلاصة تعريف الإدارة العامة',
+                    content: `من خلال مراجعة الأدبيات التي تناولت تعريف الإدارة العامة نخلص إلى أنها: "عملية تحقيق الأهداف المجتمعية المرسومة وذلك بالاستثمار الأمثل للموارد المتاحة (البشرية والمادية) بغية تقديم خدمات عامة أفضل، وفق سياسات وآليات وقوانين محددة، ووقت محدد أو متوقع، وذلك في إطار بيئة معينة".
 
-- إدارة الجودة الشاملة (TQM): التركيز على الجودة في كافة مراحل العمل والتحسين المستمر.
-- إعادة هندسة العمليات (Reengineering): إعادة تصميم العمليات الإدارية بشكل جذري لتحقيق تحسينات جوهرية في التكلفة والجودة والسرعة.
-- الحكومة الإلكترونية (E-Government): استخدام تكنولوجيا المعلومات والاتصالات لتقديم الخدمات الحكومية للمواطنين بكفاءة وشفافية.
-
-الخاتمة:
-تعتبر الإدارة العامة الركيزة الأساسية لتنفيذ السياسات العامة وتحقيق التنمية الشاملة في الدولة. ومع التحديات المعاصرة، أصبح من الضروري تطوير هذا الجهاز ليكون أكثر مرونة واستجابة لحاجات المواطنين.`,
+ويتضمن هذا التعريف العناصر التالية:
+- الإدارة أهداف: وهي النتائج المراد تحقيقها، أو المرغوب فيها، فالإدارة بهذا المعنى تنشد تحقيق أهداف مخطط لها ومحددة.
+- الإدارة موارد: وتشمل الموارد البشرية والموارد المادية والطبيعية. الإدارة العامة بهذا تعتمد على استثمار القوى البشرية والإمكانات المادية المتاحة من اجل تحقيق الأهداف المنشودة بدرجة عالية من الكفاءة والفعالية.
+- الإدارة مضمون: ويقصد بذلك أن الإدارة تتوخى تحقيق جملة من الأهداف والنتائج المجتمعية، وفق منظومة من القيم الاجتماعية والأخلاقية.`,
                     footer: 'صفحة 7'
+                },
+                 {
+                    type: 'text',
+                    title: 'الإدارة عملية تنظيمية',
+                    content: `الإدارة عملية، بمعنى أن الإدارة هي عملية إدارية مستمرة تتضمن وظائف عدة هي التخطيط والتنظيم والتوجيه والرقابة والتقويم. وتتم هذه العملية وفق منهج علمي بغية تحقيق وترشيد كافة الوظائف والعمليات الإدارية من تخطيط وتنظيم وتنسيق ورقابة واتخاذ قرارات إدارية.
+
+الإدارة آليات ومؤسسات، بمعنى أن الإدارة العامة في سبيل أداء مهامها وتحقيق أهدافها تؤطرها جملة من القوانين والتشريعات وتنتظم في مجموعة من الآليات والمؤسسات والأجهزة والهياكل التنظيمية والإجراءات ذات الطابع المؤسسي أو ما يطلق عليه "المؤسسية" في الإدارة العامة.
+
+التعامل مع كافة القضايا العامة وهي عكس الشخصنة تماما. الإدارة وقت، ويعني انجاز وتقديم الخدمات في وقت محدد أو مناسب، أي إدارة واستثمار الوقت بشكل فعال ومحاولة تقليل الوقت الضائع هدراً دون أي فائدة. وكما قال "جيفري تشوسر" أن الوقت متى فقد لا يسترد ثانية " ويقول بيتر دركر وهو في طريقه إلى توطيد دعائم الإدارة.`,
+                    footer: 'صفحة 8'
                 }
             ]
         };
@@ -263,28 +280,28 @@
 
         // --- 3. COMPONENTS ---
 
-        // Custom Book Cover Component
+        // Responsive Book Cover Component
         const BookCover = ({ className = "", style = {} }) => (
             <div className={`flex flex-col relative overflow-hidden rounded-l-md shadow-md bg-white border border-gray-200 aspect-[0.7/1] ${className}`} dir="rtl" style={style}>
                 {/* Spine effect */}
                 <div className="absolute top-0 bottom-0 right-0 w-1.5 bg-gradient-to-l from-gray-300 to-transparent opacity-30 z-10"></div>
                 
                 {/* Top Green Bar */}
-                <div className="bg-[#8fae28] py-2 px-1 text-center shrink-0">
-                    <p className="text-[0.55rem] md:text-[0.65rem] text-black font-bold leading-tight">
+                <div className="bg-[#8fae28] py-[5%] px-1 text-center shrink-0">
+                    <p className="text-[0.6rem] sm:text-xs text-black font-bold leading-tight">
                         د. فرج محمد بن لامة &nbsp;&nbsp;&nbsp; د. سالم أحمد العجيل
                     </p>
                 </div>
 
                 {/* Center Content */}
                 <div className="flex-1 flex flex-col items-center justify-center p-2 text-center">
-                    <h3 className="text-xl md:text-2xl font-black text-gray-900 leading-tight mb-2">مقدمة</h3>
-                    <h2 className="text-2xl md:text-4xl font-black text-gray-900 leading-tight">
+                    <h3 className="text-lg sm:text-xl font-black text-gray-900 leading-tight mb-2">مقدمة</h3>
+                    <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 leading-tight">
                         في الإدارة<br/>العامة
                     </h2>
                     
                     {/* Logo Simulation */}
-                    <div className="mt-6 flex flex-col items-center opacity-80">
+                    <div className="mt-4 sm:mt-6 flex flex-col items-center opacity-80 scale-75 sm:scale-100">
                          <div className="w-12 h-8 relative">
                              <svg viewBox="0 0 100 60" className="w-full h-full">
                                 <path d="M10 40 Q 30 10 50 30 T 90 20" fill="none" stroke="#dc2626" strokeWidth="8" strokeLinecap="round" />
@@ -297,15 +314,15 @@
                 </div>
 
                 {/* Bottom Green Bar */}
-                <div className="bg-[#8fae28] py-2 text-center shrink-0">
-                     <p className="text-[0.6rem] text-black font-bold">الطبـعـة الـرابـعـة</p>
-                     <p className="text-[0.6rem] text-black font-bold mt-0.5" dir="ltr">2024 - 2025 م</p>
+                <div className="bg-[#8fae28] py-[5%] text-center shrink-0">
+                     <p className="text-[0.6rem] sm:text-xs text-black font-bold">الطبـعـة الـرابـعـة</p>
+                     <p className="text-[0.6rem] sm:text-xs text-black font-bold mt-0.5" dir="ltr">2024 - 2025 م</p>
                 </div>
             </div>
         );
 
         const Button = ({ children, variant = 'primary', size = 'md', fullWidth = false, className = '', ...props }) => {
-            const baseStyles = "inline-flex items-center justify-center rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2";
+            const baseStyles = "inline-flex items-center justify-center rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 active:scale-95";
             const variants = {
                 primary: "bg-primary text-white hover:bg-secondary focus:ring-primary",
                 secondary: "bg-gray-800 text-white hover:bg-gray-900 focus:ring-gray-800",
@@ -337,7 +354,6 @@
                         onError={(e) => {
                             e.target.onerror = null; 
                             e.target.src = "https://placehold.co/600x400?text=إعلان+مساحة+متاحة"; 
-                            // Add some styling for fallback
                             e.target.className = "w-full h-auto rounded-lg shadow-sm opacity-80 border-2 border-dashed border-gray-300 p-8";
                         }}
                         alt="إعلان"
@@ -360,12 +376,12 @@
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="flex justify-between items-center h-16">
                             <div className="flex-shrink-0 flex items-center gap-2">
-                                <Link to="/" className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                                    <BookOpen className="text-primary h-8 w-8" />
+                                <Link to="/" className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
+                                    <BookOpen className="text-primary h-6 w-6 sm:h-8 sm:w-8" />
                                     <span>ملخصاتي</span>
                                 </Link>
                             </div>
-                            <nav className="hidden md:flex items-center gap-8">
+                            <nav className="hidden md:flex items-center gap-8 text-sm sm:text-base">
                                 <Link to="/" className={isActive('/')}>الرئيسية</Link>
                                 <Link to="/public-admin" className={isActive('/public-admin')}>الإدارة العامة</Link>
                                 <Link to="/about" className={isActive('/about')}>من نحن</Link>
@@ -385,7 +401,7 @@
                         </div>
                     </div>
                     {isMenuOpen && (
-                        <div className="md:hidden bg-white border-t border-gray-100">
+                        <div className="md:hidden bg-white border-t border-gray-100 absolute w-full z-50 shadow-lg">
                             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                                 <Link to="/" onClick={toggleMenu} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">الرئيسية</Link>
                                 <Link to="/public-admin" onClick={toggleMenu} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">الإدارة العامة</Link>
@@ -402,11 +418,11 @@
             return (
                 <footer id="contact" className="bg-gray-800 text-white pt-12 pb-8 mt-auto">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-right">
                             <div>
                                 <h3 className="text-xl font-bold mb-4">ملخصاتي</h3>
                                 <p className="text-gray-300 mb-4 text-sm leading-relaxed">منصة طلابية تهدف لتوفير ملخصات دراسية عالية الجودة ومجانية لمساعدة الطلاب على التفوق.</p>
-                                <div className="flex flex-col gap-2 text-sm text-gray-300">
+                                <div className="flex flex-col gap-2 text-sm text-gray-300 items-center md:items-start">
                                     <a href="https://wa.me/218XXXXXXXXX" className="flex items-center gap-2 hover:text-white">
                                         <Phone size={16} /><span>واتساب: +218XXXXXXXXX</span>
                                     </a>
@@ -446,36 +462,36 @@
                 <div className="min-h-screen bg-gray-50 fade-in">
                     <section className="relative bg-gradient-to-l from-primary to-green-900 text-white overflow-hidden">
                         <div className="absolute inset-0 bg-black opacity-20 bg-[url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=1920&auto=format&fit=crop')] bg-cover bg-center mix-blend-overlay" />
-                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10 text-center md:text-right">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20 relative z-10 text-center md:text-right">
                             <div className="md:w-2/3">
-                                <h1 className="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">ملخصات جامعية مجانية <br/> تحميل مباشر</h1>
-                                <p className="text-lg md:text-xl text-green-100 mb-8 max-w-2xl">تحميل ملخص مادة "مقدمة في الإدارة العامة" بصيغة PDF — مجاني بالكامل.</p>
-                                <Button variant="accent" size="lg" onClick={() => navigate('/public-admin')} className="gap-2 font-bold bg-amber-500 hover:bg-amber-600">
+                                <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4 leading-tight">ملخصات جامعية مجانية <br className="hidden sm:block"/> تحميل مباشر</h1>
+                                <p className="text-base sm:text-lg md:text-xl text-green-100 mb-8 max-w-2xl mx-auto md:mx-0">تحميل ملخص مادة "مقدمة في الإدارة العامة" بصيغة PDF — مجاني بالكامل.</p>
+                                <Button variant="accent" size="lg" onClick={() => navigate('/public-admin')} className="w-full sm:w-auto gap-2 font-bold bg-amber-500 hover:bg-amber-600">
                                     تحميل ملخص الإدارة العامة الآن <ChevronLeft size={20} />
                                 </Button>
                             </div>
                         </div>
                     </section>
-                    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
                         <AdPlaceholder location="banner" />
                         <div className="mt-8">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-6 border-r-4 border-primary pr-3">أحدث الملخصات المضافة</h2>
+                            <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-6 border-r-4 border-primary pr-3">أحدث الملخصات المضافة</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300 overflow-hidden group flex flex-col">
-                                    <div className="p-6 pb-0 flex gap-4">
-                                        <div className="w-24 flex-shrink-0">
+                                    <div className="p-4 sm:p-6 pb-0 flex gap-4">
+                                        <div className="w-20 sm:w-24 flex-shrink-0">
                                             <BookCover className="w-full shadow-sm transform group-hover:scale-105 transition-transform duration-300" />
                                         </div>
                                         <div className="flex-1">
                                             <span className="bg-amber-100 text-amber-800 text-xs font-bold px-2 py-1 rounded-full inline-block mb-2">مجاني</span>
-                                            <h3 className="text-lg font-bold text-gray-900 mb-1 group-hover:text-primary transition-colors leading-tight">
+                                            <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-1 group-hover:text-primary transition-colors leading-tight">
                                                 <Link to={`/${MANAGEMENT_MATERIAL.slug}`}>{MANAGEMENT_MATERIAL.title}</Link>
                                             </h3>
                                             <p className="text-xs text-gray-500 font-medium line-clamp-2">{MANAGEMENT_MATERIAL.authors}</p>
                                         </div>
                                     </div>
                                     
-                                    <div className="p-6 pt-4 flex-1 flex flex-col">
+                                    <div className="p-4 sm:p-6 pt-4 flex-1 flex flex-col">
                                         <p className="text-gray-600 text-sm mb-4 leading-relaxed line-clamp-2 flex-1">{MANAGEMENT_MATERIAL.description}</p>
                                         <div className="flex items-center gap-4 text-xs text-gray-500 mb-4 border-t border-gray-100 pt-4">
                                             <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-gray-300"></span>PDF</span>
@@ -516,27 +532,27 @@
             };
 
             return (
-                <div className="min-h-screen bg-gray-50 py-12 fade-in">
+                <div className="min-h-screen bg-gray-50 py-8 md:py-12 fade-in">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <nav className="mb-6 text-sm text-gray-500 flex items-center gap-2">
-                            <Link to="/" className="hover:text-primary">الرئيسية</Link><span>/</span><span className="text-gray-900 font-medium">{material.title}</span>
+                            <Link to="/" className="hover:text-primary">الرئيسية</Link><span>/</span><span className="text-gray-900 font-medium line-clamp-1">{material.title}</span>
                         </nav>
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                             <div className="lg:col-span-2">
                                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
                                     <div className="flex flex-col md:flex-row gap-8 mb-8">
-                                        <div className="flex-shrink-0 w-40 md:w-48 mx-auto md:mx-0 shadow-xl transform rotate-1 transition hover:rotate-0 duration-500">
+                                        <div className="flex-shrink-0 w-32 sm:w-40 md:w-48 mx-auto md:mx-0 shadow-xl transform rotate-1 transition hover:rotate-0 duration-500">
                                              <BookCover className="w-full h-full" />
                                         </div>
                                         
-                                        <div>
-                                            <h1 className="text-3xl font-extrabold text-gray-900 mb-2">{material.title}</h1>
-                                            <div className="flex items-center gap-2 text-sm text-gray-600 mb-4 bg-gray-50 inline-flex px-3 py-1.5 rounded-lg border border-gray-100">
+                                        <div className="text-center md:text-right">
+                                            <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-2">{material.title}</h1>
+                                            <div className="flex items-center justify-center md:justify-start gap-2 text-sm text-gray-600 mb-4 bg-gray-50 inline-flex px-3 py-1.5 rounded-lg border border-gray-100 w-full md:w-auto">
                                                 <Users size={16} />
-                                                <span className="font-medium">{material.authors}</span>
+                                                <span className="font-medium text-xs sm:text-sm">{material.authors}</span>
                                             </div>
-                                            <h2 className="text-lg text-gray-600 mb-6 leading-relaxed">{material.fullDescription}</h2>
-                                            <div className="flex flex-wrap gap-3 text-sm text-gray-500">
+                                            <h2 className="text-base sm:text-lg text-gray-600 mb-6 leading-relaxed text-justify md:text-right">{material.fullDescription}</h2>
+                                            <div className="flex flex-wrap justify-center md:justify-start gap-3 text-sm text-gray-500">
                                                 <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-md font-medium">الحجم: {material.fileSize}</span>
                                                 <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-md font-medium">الصفحات: {material.pageCount}</span>
                                                 <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-md font-medium">الصيغة: PDF</span>
@@ -569,7 +585,7 @@
                             <div className="lg:col-span-1 space-y-6">
                                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 sticky top-24">
                                     <h3 className="font-bold text-gray-900 mb-4">تحميل سريع</h3>
-                                    <p className="text-sm text-gray-500 mb-4">اسم الملف: <span dir="ltr" className="font-mono bg-gray-100 px-1 rounded">{material.fileName}</span></p>
+                                    <p className="text-sm text-gray-500 mb-4 break-all">اسم الملف: <span dir="ltr" className="font-mono bg-gray-100 px-1 rounded block mt-1">{material.fileName}</span></p>
                                     <Button onClick={handleDownload} disabled={isGenerating} fullWidth className="mb-2">
                                         {isGenerating ? 'جاري التحميل...' : 'تنزيل مباشر'}
                                     </Button>
@@ -710,7 +726,7 @@
                     <div className="flex flex-col min-h-screen font-sans text-gray-900">
                         <Header />
                         
-                        {/* Hidden Template for PDF Generation (8 Pages) */}
+                        {/* Hidden Template for PDF Generation */}
                         <div id="pdf-hidden-template">
                             {MANAGEMENT_MATERIAL.pdfContent.map((page, index) => (
                                 <div key={index} className="pdf-page">
@@ -739,7 +755,7 @@
                                             )}
                                             
                                             <div className="pdf-footer">
-                                                {page.footer}
+                                                <span className="pdf-page-number">{page.footer}</span>
                                             </div>
                                         </>
                                     )}
