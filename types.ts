@@ -1,26 +1,32 @@
-export interface Review {
+export interface Material {
   id: string;
-  professorId: string;
-  studentName: string; // Anonymous allowed
-  rating: number; // 1-5
-  attendance: number; // 1 (Never) to 5 (Always)
-  grading: number; // 1 (Unfair) to 5 (Very Fair)
-  difficulty: number; // 1 (Very Hard) to 5 (Very Easy)
-  text: string;
-  date: string;
-  likes: number;
+  title: string;
+  slug: string;
+  description: string;
+  fullDescription: string;
+  imageAlt: string;
+  fileSize: string;
+  pageCount: number;
+  fileName: string;
+  topics: string[];
 }
 
-export interface Professor {
-  id: string;
-  name: string;
-  university: string;
-  department: string;
-  image: string;
-  reviews: Review[];
-}
+export const BLANK_PDF = "data:application/pdf;base64,JVBERi0xLjcKCjEgMCBvYmogDwovUGFnZXMgMiAwIFIKPj4KZW5kb2JqCjIgMCBvYmogDwovS2lkcyBbMyAwIFJdCi9Db3VudCAxCj4+CmVuZG9iagozIDAgb2JqIAwKL1BhcmVudCAyIDAgUgovTWVkaWFCb3ggWzAgMCA1OTUgODQyXQovUmVzb3VyY2VzIDw8Pj4KL0NvbnRlbnRzIDQgMCBSCj4+CmVuZG9iago0IDAgb2JqIAwKL0xlbmd0aCAwCj4+CnN0cmVhbQplbmRzdHJlYW0KZW5kb2JqCnhyZWYKMCA1CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAxMCAwMDAwMCBuIAowMDAwMDAwMDYwIDAwMDAwIG4gCjAwMDAwMDAxMTEgMDAwMDAgbiAKMDAwMDAwMDIxMyAwMDAwMCBuIAp0cmFpbGVyCjw8Ci9TaXplIDUKL1Jvb3QgMSAwIFIKPj4Kc3RhcnR4cmVmCjI2MgolJUVPRgo=";
 
-export interface SearchFilters {
-  query: string;
-  university: string;
-}
+export const ACCOUTING_MATERIAL: Material = {
+  id: 'mohasaba-1',
+  title: 'محاسبة 1',
+  slug: 'mohasaba-1',
+  description: 'ملخص منظّم لمادة محاسبة 1 يغطي: أساسيات القوائم المالية، قيود اليومية، دفتر الأستاذ، المعادلة المحاسبية، مع أمثلة محلولة.',
+  fullDescription: 'ملخص موجز ومبسط للمادة مع أمثلة محلولة، مثالي للمراجعة قبل الامتحانات.',
+  imageAlt: 'ملخص محاسبة 1',
+  fileSize: '300 KB',
+  pageCount: 4,
+  fileName: 'Mohasaba1_Molakhas.pdf',
+  topics: [
+    'تعريف المحاسبة والمعادلة المحاسبية',
+    'قيود اليومية',
+    'دفتر الأستاذ',
+    'إعداد القوائم المالية البسيطة'
+  ]
+};

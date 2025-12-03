@@ -1,78 +1,769 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-  <head>
+<head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>قيّم دكتورك</title>
+    <title>ملخصاتي — ملخصات جامعية مجانية</title>
+    <meta name="description" content="موقع يقدّم ملخصات دراسية مجانية بصيغة PDF للطلاب. تحميل مباشر وسهل. إعلانات محلية لتمويل الموقع." />
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@100..900&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Noto Kufi Arabic"', 'sans-serif'],
+              serif: ['"Noto Naskh Arabic"', 'serif'],
+            },
+            colors: {
+              primary: '#15803d', // green-700 
+              secondary: '#166534', // green-800
+              accent: '#eab308', // yellow-500
+              bookGreen: '#8fae28', // The specific green from the book cover
+            }
+          },
+        },
+      }
+    </script>
+
+    <!-- React & Libraries -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/history@5/umd/history.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-router@6.3.0/umd/react-router.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-router-dom@6.3.0/umd/react-router-dom.production.min.js"></script>
+    
+    <!-- html2pdf.js for generating real PDFs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
     <style>
-      body {
-        font-family: 'Cairo', sans-serif;
-        background-color: #f8fafc;
-        scroll-behavior: smooth;
-      }
-      
+      body { font-family: 'Noto Kufi Arabic', sans-serif; }
       /* Custom Scrollbar */
-      ::-webkit-scrollbar {
-        width: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #f1f1f1;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #cbd5e1;
-        border-radius: 4px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #94a3b8;
-      }
-
-      /* Animations */
-      @keyframes fadeInUp {
-        from {
-          opacity: 0;
-          transform: translate3d(0, 20px, 0);
-        }
-        to {
-          opacity: 1;
-          transform: translate3d(0, 0, 0);
-        }
-      }
-
-      @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-      }
-
-      .animate-fade-in-up {
-        animation: fadeInUp 0.5s ease-out forwards;
-      }
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #f1f1f1; }
+      ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
       
-      .animate-fade-in {
-        animation: fadeIn 0.5s ease-out forwards;
-      }
+      .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-      .glass-effect {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
+      /* PDF Generation Styles */
+      #pdf-hidden-template {
+        position: absolute;
+        left: -9999px;
+        top: 0;
+        width: 210mm; /* A4 width */
+        background: white;
+        color: black;
+      }
+      .pdf-page {
+        width: 210mm;
+        min-height: 297mm; /* A4 height */
+        padding: 20mm;
+        background: white;
+        page-break-after: always;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+      }
+      .pdf-page:last-child {
+        page-break-after: avoid;
+      }
+      .pdf-content {
+        font-family: 'Noto Naskh Arabic', serif;
+        font-size: 14pt;
+        line-height: 1.8;
+        text-align: justify;
+      }
+      .pdf-header {
+        border-bottom: 2px solid #8fae28;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 10pt;
+        color: #666;
+      }
+      .pdf-footer {
+        position: absolute;
+        bottom: 10mm;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 10pt;
+        color: #999;
       }
     </style>
-  <script type="importmap">
+<script type="importmap">
 {
   "imports": {
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.1/",
+    "react": "https://aistudiocdn.com/react@^19.2.1",
     "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0",
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0"
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
+    "react-router-dom": "https://aistudiocdn.com/react-router-dom@^7.10.0"
   }
 }
 </script>
-<link rel="stylesheet" href="/index.css">
 </head>
-  <body>
+<body class="bg-gray-50 text-gray-900">
     <div id="root"></div>
-  <script type="module" src="/index.tsx"></script>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        const { HashRouter, Routes, Route, Link, useLocation, useNavigate, useParams, Navigate } = ReactRouterDOM;
+
+        // --- 0. AUTH CONSTANTS ---
+        // مفتاح_API_الخاص_بكم_هنا
+        const API_KEY = "123";
+
+        // --- 1. CONSTANTS & DATA ---
+        
+        const MANAGEMENT_MATERIAL = {
+            id: 'public-admin',
+            title: 'مقدمة في الإدارة العامة',
+            slug: 'public-admin',
+            authors: 'د. فرج محمد بن لامة، د. سالم أحمد العجيل',
+            description: 'ملخص شامل لكتاب مقدمة في الإدارة العامة. يغطي المفاهيم الأساسية، الهيكل التنظيمي، والوظائف الإدارية الحديثة.',
+            fullDescription: 'ملخص وافي ومبسط لمقرر الإدارة العامة (الطبعة الرابعة 2024-2025). يشرح الفرق بين الإدارة العامة وإدارة الأعمال، ويتناول بالتفصيل وظائف التخطيط، التنظيم، القيادة، والرقابة بأسلوب مبسط للطلاب.',
+            imageAlt: 'غلاف كتاب مقدمة في الإدارة العامة',
+            fileSize: '450 KB',
+            pageCount: 8,
+            fileName: 'PublicAdmin_Summary.pdf',
+            topics: [
+                'ماهية الإدارة العامة وتطورها',
+                'تطور الفكر الإداري',
+                'خصائص الإدارة العامة',
+                'منهجية دراسة الإدارة العامة',
+                'الإدارة العامة من منظور مقارن',
+                'مضمون وأخلاقيات الإدارة',
+                'العمليات والوظائف الإدارية',
+                'المفاهيم والاتجاهات الجديدة'
+            ],
+            // Content for the 8 PDF Pages
+            pdfContent: [
+                {
+                    type: 'cover',
+                },
+                {
+                    type: 'text',
+                    title: 'المقدمة',
+                    content: `هذه الطبعة الثالثة من كتاب مقدمة في الإدارة العامة، وهي طبعة جديدة ومنقحة نقدمها للمكتبة الإدارية العربية والليبية بخاصة؛ وإلى الباحثين والمهتمين بهذا الحقل العلمي المتجدد. وهو جهد علمي متواضع قابل للتطوير والإضافة والإثراء. يتوزع الكتاب على سبعة فصول رئيسة هي كالتالي:
+
+1. الفصل الأول: استعرض هوية وماهية الإدارة العامة من حيث نشأتها وتطورها وخصائصها وأهميتها والمبادئ التي تتأسس عليها.
+2. الفصل الثاني: تناول تطور الفكر الإداري الكلاسيكي والحديث والمعاصر مستعرضا أهم النظريات التي ساهمت في التأسيس لحقل الإدارة العامة وفي إثراءه.
+3. الفصل الثالث: خصص لدراسة موضوع الإدارة العامة كحقل علمي مستقل مستعرضا طبيعة هذا الحقل وتعيين حدوده واستقلاليته وعلاقته بحقول العلوم الاجتماعية الأخرى.
+4. الفصل الرابع: تناول منهجية دراسة الإدارة العامة والمداخل التقليدية والسلوكية والأساليب البحثية التي تساعد الباحث في وصف وتحليل الظاهرة الإدارية.`,
+                    footer: 'صفحة 1'
+                },
+                {
+                    type: 'list',
+                    title: 'فهرس المحتويات',
+                    items: [
+                        'الفصل الأول: ماهية الإدارة العامة وتطورها',
+                        'الفصل الثاني: تطور الفكر الإداري',
+                        'الفصل الثالث: خصائص موضوع الإدارة العامة',
+                        'الفصل الرابع: منهجية دراسة الإدارة العامة',
+                        'الفصل الخامس: الإدارة العامة من منظور مقارن',
+                        'الفصل السادس: مضمون وأخلاقيات وقيم الإدارة العامة',
+                        'الفصل السابع: عملية الإدارة العامة (التخطيط، التنظيم، التوجيه، الرقابة)',
+                        'الفصل الثامن: المفاهيم والاتجاهات الجديدة (إدارة الجودة الشاملة، الإدارة الإلكترونية)'
+                    ],
+                    footer: 'صفحة 2'
+                },
+                {
+                    type: 'text',
+                    title: 'الفصل الأول: الإدارة العامة: الهوية والماهية',
+                    content: `الإدارة كميدان للاهتمام والممارسة ذات تاريخ طويل يعود إلى أقدم العصور عندما قامت محاولات في حضارة مصر الفرعونية وفي حضارات الصين القديمة والحضارة اليونانية والرومانية، وكذا حضارات بلاد الرافدين ومنطقة الهلال الخصيب وغيرها من الحضارات الإنسانية.
+
+بغية إرساء مبادئ لتنظيم وتقسيم وتقنين العمل ولتلقين المبادئ الإدارية الصحيحة ولكن بدايات الدراسة العلمية للإدارة العامة نشأت خلال قرون لاحقة ويحددها البعض بأواخر القرن التاسع عشر وبدايات القرن العشرين.
+
+كلمة الإدارة بصفة عامة يقصد بها "الخدمة"، حيث تستخدم كلمة إدارة كترجمة لكلمة management والأصل اللاتيني لهذه الكلمة يعني "serve"، أي الخدمة أو من يقومون بالخدمة.`,
+                    footer: 'صفحة 3'
+                },
+                {
+                    type: 'text',
+                    title: 'تعريف الإدارة العامة',
+                    content: `والإدارة من حيث التعريف البسيط لها هي "تنفيذ الأعمال بواسطة آخرين عن طريق تخطيط وتنظيم وتوجيه ورقابة مجهوداتهم". بينما يعرفها البعض بأنها "النشاط الإنساني الذي يستهدف تحقيق التعاون الفعال المثمر بين الجهود البشرية المختلفة من اجل تحقيق هدف معين بدرجة عالية من الكفاءة والفعالية".
+
+يذهب بعض الأدبيات إلى أنه من الصعب الاتفاق على تعريف دقيق محدد جامع مانع ومتفق عليه للإدارة العامة، وذلك للأسباب التالية:
+1. إن الإدارة العامة تعتبر من العلوم الاجتماعية التي ترتبط بالعنصر البشري ومن ثم يصعب التعميم وتتعدد وجهات النظر لأي مفهوم أو مصطلح.
+2. تعدد مدارس الإدارة العامة ومناهجها ومن ثم اختلاف التعريفات حسب المدارس الإدارية المتعددة.`,
+                    footer: 'صفحة 4'
+                },
+                {
+                    type: 'text',
+                    title: 'خصائص الإدارة العامة',
+                    content: `تعددت التعريفات الخاصة بالإدارة العامة، ويمكن استخلاص مجموعة من الخصائص التي تميز هذا الحقل:
+
+أولاً: الإدارة العامة نشاط هادف. فهي ليست عشوائية، بل تسعى لتحقيق أهداف مجتمعية محددة رسمتها السلطة السياسية في الدولة.
+
+ثانياً: الإدارة العامة نشاط رسمي. تستمد سلطتها من القوانين والأنظمة المعمول بها في الدولة، وتعمل في إطار تنظيمي محدد.
+
+ثالثاً: الإدارة العامة نشاط إنساني. تعتمد بشكل أساسي على العنصر البشري في تنفيذ مهامها، وتتأثر بالسلوك الإنساني والعلاقات الاجتماعية.`,
+                    footer: 'صفحة 5'
+                },
+                {
+                    type: 'text',
+                    title: 'العمليات والوظائف الإدارية',
+                    content: `تتكون العملية الإدارية من مجموعة من الوظائف المترابطة التي يمارسها المديرون في مختلف المستويات:
+
+1. التخطيط (Planning): هو الوظيفة الإدارية الأولى، ويعني تحديد الأهداف ووضع السياسات والخطط الكفيلة بتحقيقها.
+2. التنظيم (Organizing): يعني تحديد الهيكل التنظيمي، وتوزيع المهام والمسؤوليات، وتحديد العلاقات بين الأفراد والإدارات.
+3. القيادة والتوجيه (Leading & Directing): تحفيز الموظفين وتوجيه سلوكهم نحو تحقيق الأهداف.
+4. الرقابة (Controlling): قياس الأداء الفعلي ومقارنته بالأهداف المخططة، واتخاذ الإجراءات التصحيحية عند وجود انحرافات.`,
+                    footer: 'صفحة 6'
+                },
+                {
+                    type: 'text',
+                    title: 'المفاهيم والاتجاهات الجديدة',
+                    content: `شهد حقل الإدارة العامة تطورات كبيرة في العقود الأخيرة، ظهرت معها مفاهيم جديدة تهدف لتحسين الأداء الحكومي:
+
+- إدارة الجودة الشاملة (TQM): التركيز على الجودة في كافة مراحل العمل والتحسين المستمر.
+- إعادة هندسة العمليات (Reengineering): إعادة تصميم العمليات الإدارية بشكل جذري لتحقيق تحسينات جوهرية في التكلفة والجودة والسرعة.
+- الحكومة الإلكترونية (E-Government): استخدام تكنولوجيا المعلومات والاتصالات لتقديم الخدمات الحكومية للمواطنين بكفاءة وشفافية.
+
+الخاتمة:
+تعتبر الإدارة العامة الركيزة الأساسية لتنفيذ السياسات العامة وتحقيق التنمية الشاملة في الدولة. ومع التحديات المعاصرة، أصبح من الضروري تطوير هذا الجهاز ليكون أكثر مرونة واستجابة لحاجات المواطنين.`,
+                    footer: 'صفحة 7'
+                }
+            ]
+        };
+
+        // --- 2. ICONS (SVG Components) ---
+        const IconBase = ({ d, size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                {d}
+            </svg>
+        );
+
+        const BookOpen = (props) => <IconBase {...props} d={<><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></>} />;
+        const MenuIcon = (props) => <IconBase {...props} d={<><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="18" x2="20" y2="18"/></>} />;
+        const XIcon = (props) => <IconBase {...props} d={<><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>} />;
+        const Phone = (props) => <IconBase {...props} d={<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>} />;
+        const FileText = (props) => <IconBase {...props} d={<><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></>} />;
+        const Download = (props) => <IconBase {...props} d={<><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></>} />;
+        const Eye = (props) => <IconBase {...props} d={<><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></>} />;
+        const ChevronLeft = (props) => <IconBase {...props} d={<polyline points="15 18 9 12 15 6"/>} />;
+        const Share2 = (props) => <IconBase {...props} d={<><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></>} />;
+        const CheckCircle = (props) => <IconBase {...props} d={<><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></>} />;
+        const AlertCircle = (props) => <IconBase {...props} d={<><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></>} />;
+        const Users = (props) => <IconBase {...props} d={<><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></>} />;
+
+
+        // --- 3. COMPONENTS ---
+
+        // Custom Book Cover Component
+        const BookCover = ({ className = "", style = {} }) => (
+            <div className={`flex flex-col relative overflow-hidden rounded-l-md shadow-md bg-white border border-gray-200 aspect-[0.7/1] ${className}`} dir="rtl" style={style}>
+                {/* Spine effect */}
+                <div className="absolute top-0 bottom-0 right-0 w-1.5 bg-gradient-to-l from-gray-300 to-transparent opacity-30 z-10"></div>
+                
+                {/* Top Green Bar */}
+                <div className="bg-[#8fae28] py-2 px-1 text-center shrink-0">
+                    <p className="text-[0.55rem] md:text-[0.65rem] text-black font-bold leading-tight">
+                        د. فرج محمد بن لامة &nbsp;&nbsp;&nbsp; د. سالم أحمد العجيل
+                    </p>
+                </div>
+
+                {/* Center Content */}
+                <div className="flex-1 flex flex-col items-center justify-center p-2 text-center">
+                    <h3 className="text-xl md:text-2xl font-black text-gray-900 leading-tight mb-2">مقدمة</h3>
+                    <h2 className="text-2xl md:text-4xl font-black text-gray-900 leading-tight">
+                        في الإدارة<br/>العامة
+                    </h2>
+                    
+                    {/* Logo Simulation */}
+                    <div className="mt-6 flex flex-col items-center opacity-80">
+                         <div className="w-12 h-8 relative">
+                             <svg viewBox="0 0 100 60" className="w-full h-full">
+                                <path d="M10 40 Q 30 10 50 30 T 90 20" fill="none" stroke="#dc2626" strokeWidth="8" strokeLinecap="round" />
+                                <path d="M20 45 Q 40 20 60 35" fill="none" stroke="#4b5563" strokeWidth="6" strokeLinecap="round" />
+                                <text x="50" y="55" fontSize="16" textAnchor="middle" fill="#000" fontWeight="bold">TiB</text>
+                             </svg>
+                         </div>
+                         <p className="text-[0.5rem] font-serif font-bold mt-1 text-black">مكتبة طرابلس العالمية</p>
+                    </div>
+                </div>
+
+                {/* Bottom Green Bar */}
+                <div className="bg-[#8fae28] py-2 text-center shrink-0">
+                     <p className="text-[0.6rem] text-black font-bold">الطبـعـة الـرابـعـة</p>
+                     <p className="text-[0.6rem] text-black font-bold mt-0.5" dir="ltr">2024 - 2025 م</p>
+                </div>
+            </div>
+        );
+
+        const Button = ({ children, variant = 'primary', size = 'md', fullWidth = false, className = '', ...props }) => {
+            const baseStyles = "inline-flex items-center justify-center rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2";
+            const variants = {
+                primary: "bg-primary text-white hover:bg-secondary focus:ring-primary",
+                secondary: "bg-gray-800 text-white hover:bg-gray-900 focus:ring-gray-800",
+                outline: "border-2 border-primary text-primary hover:bg-blue-50 focus:ring-primary",
+                accent: "bg-accent text-white hover:bg-yellow-600 focus:ring-accent",
+            };
+            const sizes = {
+                sm: "px-3 py-1.5 text-sm",
+                md: "px-4 py-2 text-base",
+                lg: "px-6 py-3 text-lg",
+            };
+            const widthClass = fullWidth ? "w-full" : "";
+            return (
+                <button className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${widthClass} ${className}`} {...props}>
+                    {children}
+                </button>
+            );
+        };
+
+        const AdPlaceholder = ({ location, className = '' }) => {
+            return (
+                <div className={`flex justify-center items-center my-6 w-full ${className}`}>
+                    {/* 
+                       IMPORTANT: To show the balloon image, save the image file as 'balloon.jpg' 
+                       in the same folder as this index.html file.
+                    */}
+                    <img 
+                        src="balloon.jpg" 
+                        onError={(e) => {
+                            e.target.onerror = null; 
+                            e.target.src = "https://placehold.co/600x400?text=إعلان+مساحة+متاحة"; 
+                            // Add some styling for fallback
+                            e.target.className = "w-full h-auto rounded-lg shadow-sm opacity-80 border-2 border-dashed border-gray-300 p-8";
+                        }}
+                        alt="إعلان"
+                        className="max-w-full h-auto rounded-lg shadow-sm object-contain cursor-pointer hover:opacity-95 transition-opacity"
+                        style={{ maxHeight: location === 'banner' ? '120px' : '300px' }}
+                        title="إعلان"
+                    />
+                </div>
+            );
+        };
+
+        const Header = () => {
+            const [isMenuOpen, setIsMenuOpen] = useState(false);
+            const location = useLocation();
+            const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+            const isActive = (path) => location.pathname === path ? "text-primary font-bold" : "text-gray-600 hover:text-primary";
+
+            return (
+                <header className="bg-white shadow-sm sticky top-0 z-50">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="flex justify-between items-center h-16">
+                            <div className="flex-shrink-0 flex items-center gap-2">
+                                <Link to="/" className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                                    <BookOpen className="text-primary h-8 w-8" />
+                                    <span>ملخصاتي</span>
+                                </Link>
+                            </div>
+                            <nav className="hidden md:flex items-center gap-8">
+                                <Link to="/" className={isActive('/')}>الرئيسية</Link>
+                                <Link to="/public-admin" className={isActive('/public-admin')}>الإدارة العامة</Link>
+                                <Link to="/about" className={isActive('/about')}>من نحن</Link>
+                                <Link to="/#contact" className="text-gray-600 hover:text-primary">تواصل</Link>
+                            </nav>
+                            <div className="hidden md:flex items-center">
+                                <a href="https://wa.me/218XXXXXXXXX" target="_blank" className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors">
+                                    <Phone size={16} />
+                                    <span>واتساب</span>
+                                </a>
+                            </div>
+                            <div className="md:hidden flex items-center">
+                                <button onClick={toggleMenu} className="text-gray-500 hover:text-gray-700 p-2">
+                                    {isMenuOpen ? <XIcon size={24} /> : <MenuIcon size={24} />}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {isMenuOpen && (
+                        <div className="md:hidden bg-white border-t border-gray-100">
+                            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                                <Link to="/" onClick={toggleMenu} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">الرئيسية</Link>
+                                <Link to="/public-admin" onClick={toggleMenu} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">الإدارة العامة</Link>
+                                <Link to="/about" onClick={toggleMenu} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">من نحن</Link>
+                                <a href="https://wa.me/218XXXXXXXXX" className="block mt-4 text-center w-full bg-green-500 text-white px-4 py-3 rounded-lg font-bold">تواصل عبر واتساب</a>
+                            </div>
+                        </div>
+                    )}
+                </header>
+            );
+        };
+
+        const Footer = () => {
+            return (
+                <footer id="contact" className="bg-gray-800 text-white pt-12 pb-8 mt-auto">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div>
+                                <h3 className="text-xl font-bold mb-4">ملخصاتي</h3>
+                                <p className="text-gray-300 mb-4 text-sm leading-relaxed">منصة طلابية تهدف لتوفير ملخصات دراسية عالية الجودة ومجانية لمساعدة الطلاب على التفوق.</p>
+                                <div className="flex flex-col gap-2 text-sm text-gray-300">
+                                    <a href="https://wa.me/218XXXXXXXXX" className="flex items-center gap-2 hover:text-white">
+                                        <Phone size={16} /><span>واتساب: +218XXXXXXXXX</span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-bold mb-4">روابط سريعة</h3>
+                                <ul className="space-y-2 text-sm text-gray-300">
+                                    <li><Link to="/" className="hover:text-white">الرئيسية</Link></li>
+                                    <li><Link to="/public-admin" className="hover:text-white">ملخص الإدارة العامة</Link></li>
+                                    <li><Link to="/about" className="hover:text-white">من نحن</Link></li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-bold mb-4">قانوني</h3>
+                                <ul className="space-y-2 text-sm text-gray-300">
+                                    <li><Link to="/privacy" className="hover:text-white">سياسة الخصوصية</Link></li>
+                                    <li><Link to="/terms" className="hover:text-white">شروط الاستخدام</Link></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div className="border-t border-gray-700 mt-8 pt-8 text-center text-sm text-gray-400">
+                            <p>© {new Date().getFullYear()} ملخصاتي — جميع الحقوق محفوظة.</p>
+                        </div>
+                    </div>
+                </footer>
+            );
+        };
+
+        // --- 4. PAGES ---
+
+        const Home = () => {
+            const navigate = useNavigate();
+            const { handleDownload, isGenerating } = usePDFGenerator();
+
+            return (
+                <div className="min-h-screen bg-gray-50 fade-in">
+                    <section className="relative bg-gradient-to-l from-primary to-green-900 text-white overflow-hidden">
+                        <div className="absolute inset-0 bg-black opacity-20 bg-[url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=1920&auto=format&fit=crop')] bg-cover bg-center mix-blend-overlay" />
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10 text-center md:text-right">
+                            <div className="md:w-2/3">
+                                <h1 className="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">ملخصات جامعية مجانية <br/> تحميل مباشر</h1>
+                                <p className="text-lg md:text-xl text-green-100 mb-8 max-w-2xl">تحميل ملخص مادة "مقدمة في الإدارة العامة" بصيغة PDF — مجاني بالكامل.</p>
+                                <Button variant="accent" size="lg" onClick={() => navigate('/public-admin')} className="gap-2 font-bold bg-amber-500 hover:bg-amber-600">
+                                    تحميل ملخص الإدارة العامة الآن <ChevronLeft size={20} />
+                                </Button>
+                            </div>
+                        </div>
+                    </section>
+                    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                        <AdPlaceholder location="banner" />
+                        <div className="mt-8">
+                            <h2 className="text-2xl font-bold text-gray-800 mb-6 border-r-4 border-primary pr-3">أحدث الملخصات المضافة</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div className="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300 overflow-hidden group flex flex-col">
+                                    <div className="p-6 pb-0 flex gap-4">
+                                        <div className="w-24 flex-shrink-0">
+                                            <BookCover className="w-full shadow-sm transform group-hover:scale-105 transition-transform duration-300" />
+                                        </div>
+                                        <div className="flex-1">
+                                            <span className="bg-amber-100 text-amber-800 text-xs font-bold px-2 py-1 rounded-full inline-block mb-2">مجاني</span>
+                                            <h3 className="text-lg font-bold text-gray-900 mb-1 group-hover:text-primary transition-colors leading-tight">
+                                                <Link to={`/${MANAGEMENT_MATERIAL.slug}`}>{MANAGEMENT_MATERIAL.title}</Link>
+                                            </h3>
+                                            <p className="text-xs text-gray-500 font-medium line-clamp-2">{MANAGEMENT_MATERIAL.authors}</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="p-6 pt-4 flex-1 flex flex-col">
+                                        <p className="text-gray-600 text-sm mb-4 leading-relaxed line-clamp-2 flex-1">{MANAGEMENT_MATERIAL.description}</p>
+                                        <div className="flex items-center gap-4 text-xs text-gray-500 mb-4 border-t border-gray-100 pt-4">
+                                            <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-gray-300"></span>PDF</span>
+                                            <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-gray-300"></span>{MANAGEMENT_MATERIAL.fileSize}</span>
+                                        </div>
+                                        <div className="flex flex-col gap-2">
+                                            <Button onClick={handleDownload} disabled={isGenerating} fullWidth className="gap-2 justify-center text-sm">
+                                                <Download size={16} />
+                                                {isGenerating ? 'جارٍ التحضير...' : 'تنزيل (PDF)'}
+                                            </Button>
+                                            <Link to={`/${MANAGEMENT_MATERIAL.slug}`} className="w-full">
+                                                <Button variant="secondary" fullWidth className="gap-2 justify-center bg-gray-50 text-gray-600 hover:bg-gray-100 border-none text-sm"><Eye size={16} />تفاصيل</Button>
+                                            </Link>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            );
+        };
+
+        const MaterialDetail = () => {
+            const { slug } = useParams();
+            const material = MANAGEMENT_MATERIAL;
+            const { handleDownload, isGenerating } = usePDFGenerator();
+            
+            if (slug && slug !== material.slug) return <Navigate to="/" replace />;
+
+            const handleShare = () => {
+                if (navigator.share) {
+                    navigator.share({ title: `ملخص ${material.title}`, text: material.description, url: window.location.href }).catch(console.error);
+                } else {
+                    alert('تم نسخ الرابط للحافظة!');
+                    try { navigator.clipboard.writeText(window.location.href); } catch(e){}
+                }
+            };
+
+            return (
+                <div className="min-h-screen bg-gray-50 py-12 fade-in">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <nav className="mb-6 text-sm text-gray-500 flex items-center gap-2">
+                            <Link to="/" className="hover:text-primary">الرئيسية</Link><span>/</span><span className="text-gray-900 font-medium">{material.title}</span>
+                        </nav>
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                            <div className="lg:col-span-2">
+                                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
+                                    <div className="flex flex-col md:flex-row gap-8 mb-8">
+                                        <div className="flex-shrink-0 w-40 md:w-48 mx-auto md:mx-0 shadow-xl transform rotate-1 transition hover:rotate-0 duration-500">
+                                             <BookCover className="w-full h-full" />
+                                        </div>
+                                        
+                                        <div>
+                                            <h1 className="text-3xl font-extrabold text-gray-900 mb-2">{material.title}</h1>
+                                            <div className="flex items-center gap-2 text-sm text-gray-600 mb-4 bg-gray-50 inline-flex px-3 py-1.5 rounded-lg border border-gray-100">
+                                                <Users size={16} />
+                                                <span className="font-medium">{material.authors}</span>
+                                            </div>
+                                            <h2 className="text-lg text-gray-600 mb-6 leading-relaxed">{material.fullDescription}</h2>
+                                            <div className="flex flex-wrap gap-3 text-sm text-gray-500">
+                                                <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-md font-medium">الحجم: {material.fileSize}</span>
+                                                <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-md font-medium">الصفحات: {material.pageCount}</span>
+                                                <span className="bg-blue-50 text-blue-700 px-3 py-1 rounded-md font-medium">الصيغة: PDF</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col sm:flex-row gap-4 mb-8 border-b border-gray-100 pb-8">
+                                        <Button onClick={handleDownload} disabled={isGenerating} size="lg" className="flex-1 gap-2 shadow-lg shadow-green-200 py-4 text-lg">
+                                            <Download size={24} />
+                                            {isGenerating ? 'جارٍ تحضير الملف...' : 'تحميل الملخص (PDF)'}
+                                        </Button>
+                                        <Button onClick={handleShare} variant="secondary" size="lg" className="gap-2 bg-gray-100 text-gray-700 border-none hover:bg-gray-200"><Share2 size={20} />مشاركة</Button>
+                                    </div>
+                                    <div className="mb-8">
+                                        <h3 className="text-xl font-bold text-gray-900 mb-4">محتويات الملخص</h3>
+                                        <ul className="space-y-3">
+                                            {material.topics.map((topic, i) => (
+                                                <li key={i} className="flex items-start gap-3 text-gray-700 bg-gray-50 p-3 rounded-lg border border-gray-100">
+                                                    <CheckCircle className="text-green-500 w-5 h-5 flex-shrink-0 mt-0.5" /><span>{topic}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                    <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex gap-3 text-amber-800 text-sm">
+                                        <AlertCircle className="w-5 h-5 flex-shrink-0" /><p>هذا الملخص مجهود طلابي للمساعدة في المراجعة. لا يغني عن الكتاب الجامعي أو محاضرات الدكتور.</p>
+                                    </div>
+                                    <AdPlaceholder location="banner" className="h-auto py-8" />
+                                </div>
+                            </div>
+                            <div className="lg:col-span-1 space-y-6">
+                                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 sticky top-24">
+                                    <h3 className="font-bold text-gray-900 mb-4">تحميل سريع</h3>
+                                    <p className="text-sm text-gray-500 mb-4">اسم الملف: <span dir="ltr" className="font-mono bg-gray-100 px-1 rounded">{material.fileName}</span></p>
+                                    <Button onClick={handleDownload} disabled={isGenerating} fullWidth className="mb-2">
+                                        {isGenerating ? 'جاري التحميل...' : 'تنزيل مباشر'}
+                                    </Button>
+                                    <p className="text-xs text-center text-gray-400 mt-2">آمن وخالي من الفيروسات</p>
+                                    <div className="mt-6"><AdPlaceholder location="sidebar" /></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const About = () => (
+            <div className="max-w-4xl mx-auto px-4 py-16 fade-in">
+                <h1 className="text-3xl font-bold mb-6 text-gray-900">من نحن</h1>
+                <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 prose prose-lg">
+                    <p className="text-lg text-gray-700 leading-relaxed mb-6">أهلاً بك في موقع <strong>ملخصاتي</strong>.</p>
+                    <p className="text-gray-700 leading-relaxed mb-6">نحن مجموعة من الطلاب الجامعيين نسعى لتسهيل الرحلة الدراسية لزملائنا.</p>
+                    <div className="bg-blue-50 p-6 rounded-xl mt-8">
+                        <h3 className="font-bold text-blue-900 mb-2">تواصل معنا</h3>
+                        <a href="https://wa.me/218XXXXXXXXX" className="inline-flex items-center gap-2 text-primary font-bold hover:underline"><Phone size={18} />تواصل عبر واتساب</a>
+                    </div>
+                </div>
+            </div>
+        );
+
+        const Privacy = () => (
+            <div className="max-w-4xl mx-auto px-4 py-16 fade-in">
+                <h1 className="text-3xl font-bold mb-6 text-gray-900">سياسة الخصوصية</h1>
+                <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+                    <p className="mb-4 text-gray-700">نستخدم ملفات تعريف الارتباط لتحسين تجربة المستخدم. المحتوى مجاني.</p>
+                </div>
+            </div>
+        );
+
+        const Terms = () => (
+            <div className="max-w-4xl mx-auto px-4 py-16 fade-in">
+                <h1 className="text-3xl font-bold mb-6 text-gray-900">شروط الاستخدام</h1>
+                <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+                    <p className="text-gray-700">المواد مجانية للاستخدام الشخصي فقط، يرجى عدم إعادة بيعها.</p>
+                </div>
+            </div>
+        );
+
+        // --- 5. PDF GENERATOR HOOK ---
+        const usePDFGenerator = () => {
+            const [isGenerating, setIsGenerating] = useState(false);
+
+            const handleDownload = () => {
+                setIsGenerating(true);
+                const element = document.getElementById('pdf-hidden-template');
+                if (!element) {
+                    setIsGenerating(false);
+                    return;
+                }
+
+                // Configuration for html2pdf
+                const opt = {
+                    margin: 0,
+                    filename: MANAGEMENT_MATERIAL.fileName,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2, useCORS: true },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+                };
+
+                // Add a small delay to ensure rendering
+                setTimeout(() => {
+                    html2pdf().from(element).set(opt).save().then(() => {
+                        setIsGenerating(false);
+                    });
+                }, 500);
+            };
+
+            return { handleDownload, isGenerating };
+        };
+
+        // --- 6. AUTH COMPONENT ---
+        const LoginScreen = ({ onLogin }) => {
+            const [input, setInput] = useState('');
+            const [error, setError] = useState('');
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                if (input === API_KEY) {
+                    onLogin();
+                } else {
+                    setError('رمز الدخول غير صحيح');
+                }
+            };
+
+            return (
+                <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4" dir="rtl">
+                    <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-8">
+                        <div className="text-center mb-8">
+                            <BookCover className="w-24 mx-auto mb-4 shadow-sm" />
+                            <h1 className="text-2xl font-bold text-gray-900">تسجيل الدخول</h1>
+                            <p className="text-gray-500 mt-2">أدخل مفتاح API للمتابعة</p>
+                        </div>
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">مفتاح API</label>
+                                <input 
+                                    type="password" 
+                                    value={input}
+                                    onChange={(e) => setInput(e.target.value)}
+                                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
+                                    placeholder="أدخل الرمز هنا..."
+                                />
+                                {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+                            </div>
+                            <Button fullWidth type="submit" size="lg">دخول</Button>
+                        </form>
+                    </div>
+                </div>
+            );
+        };
+
+        // --- 7. APP ROOT ---
+
+        const ScrollToTop = () => {
+            const { pathname } = useLocation();
+            useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+            return null;
+        };
+
+        const App = () => {
+            const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+            if (!isAuthenticated) {
+                return <LoginScreen onLogin={() => setIsAuthenticated(true)} />;
+            }
+
+            return (
+                <HashRouter>
+                    <ScrollToTop />
+                    <div className="flex flex-col min-h-screen font-sans text-gray-900">
+                        <Header />
+                        
+                        {/* Hidden Template for PDF Generation (8 Pages) */}
+                        <div id="pdf-hidden-template">
+                            {MANAGEMENT_MATERIAL.pdfContent.map((page, index) => (
+                                <div key={index} className="pdf-page">
+                                    {page.type === 'cover' ? (
+                                        <div className="h-full flex items-center justify-center">
+                                            <BookCover className="w-full h-full border-0 shadow-none" />
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <div className="pdf-header">
+                                                <span>{MANAGEMENT_MATERIAL.title}</span>
+                                                <span>د. فرج محمد بن لامة - د. سالم أحمد العجيل</span>
+                                            </div>
+                                            <h2 className="text-2xl font-bold mb-6 text-center border-b-2 border-gray-100 pb-4">{page.title}</h2>
+                                            
+                                            {page.type === 'list' ? (
+                                                <ul className="list-decimal list-inside space-y-4 text-xl">
+                                                    {page.items.map((item, idx) => (
+                                                        <li key={idx} className="p-2 border-b border-gray-50">{item}</li>
+                                                    ))}
+                                                </ul>
+                                            ) : (
+                                                <div className="pdf-content whitespace-pre-wrap">
+                                                    {page.content}
+                                                </div>
+                                            )}
+                                            
+                                            <div className="pdf-footer">
+                                                {page.footer}
+                                            </div>
+                                        </>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+
+                        <Routes>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/public-admin" element={<MaterialDetail />} />
+                            <Route path="/:slug" element={<MaterialDetail />} />
+                            <Route path="/about" element={<About />} />
+                            <Route path="/privacy" element={<Privacy />} />
+                            <Route path="/terms" element={<Terms />} />
+                            <Route path="*" element={<Navigate to="/" replace />} />
+                        </Routes>
+                        <Footer />
+                    </div>
+                </HashRouter>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
 </body>
 </html>

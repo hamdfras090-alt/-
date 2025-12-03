@@ -1,5 +1,5 @@
 {
-  "name": "copy-of-copy-of-قيّم-دكتورك-(qayyim-doktorak)",
+  "name": "ملخصاتي-(molakhasati)",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,10 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "react-dom": "^19.2.0",
-    "react": "^19.2.0",
+    "react": "^19.2.1",
     "lucide-react": "^0.555.0",
-    "@google/genai": "^1.30.0"
+    "react-dom": "^19.2.1",
+    "react-router-dom": "^7.10.0"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
